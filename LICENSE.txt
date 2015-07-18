@@ -1,0 +1,12 @@
+Los archivos siguientes tienen licencia lgpl-3.0:
+	graphics.py
+	controllers.py
+	wrap.py
+con algunas excepciones de códigos que has sido copiados y se señalan en los mismos archivos de quien son.
+
+Los archivos siguientes tienen licencia gpl-3.0.
+	views.py
+	main.py
+	
+Los archivos de imagen tienen sus propios autores y hasn sido descargados pero son de de uso libre.
+Los archivos restantes son de otros autores que han cedido su código al dominio público.
