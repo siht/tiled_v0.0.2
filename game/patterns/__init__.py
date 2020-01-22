@@ -1,2 +1,2 @@
-from patterns import *
-from wrap import MetaWrap, typewrapper
+from .patterns import *
+from .wrap import typewrapper

@@ -152,7 +152,7 @@ class Map(AbsListener):
         # TO DO:
         # to think in any form to load a map
         # temp
-        number_sector = range(SECTOR_HEIGHT*SECTOR_WIDTH)
+        number_sector = list(range(SECTOR_HEIGHT*SECTOR_WIDTH))
         lenght_aux = len(number_sector)
         for i in number_sector:
             self.sectors.append(Sector(self.ev_manager))
@@ -181,7 +181,7 @@ class Sector(object):
     
     def __init__(self, ev_manager):
         self.ev_manager = ev_manager
-        self.neighbors = range(4)
+        self.neighbors = list(range(4))
         self.neighbors[DIRECTION_UP] = None
         self.neighbors[DIRECTION_DOWN] = None
         self.neighbors[DIRECTION_LEFT] = None

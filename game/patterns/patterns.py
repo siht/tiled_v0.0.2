@@ -7,7 +7,7 @@ from weakref import WeakKeyDictionary
 from events import TickEvent
 from abc import ABCMeta, abstractmethod
 
-class Mediator(object):
+class Mediator:
     '''
     Event Manager copied of Sjbrown
     this object is responsible for coordinating most communication
@@ -38,13 +38,13 @@ class Mediator(object):
             while len(events) > 0:
                 ev = events.pop(0)
                 self.debug(ev)
-                for listener in self.listeners.keys():
+                for listener in list(self.listeners):
                     listener.notify(ev)
             #at the end, notify listeners of the Tick event
-            for listener in self.listeners.keys():
+            for listener in list(self.listeners):
                 listener.notify(event)
 
-class AbsListener:
+class AbsListener(metaclass=ABCMeta):
     '''Listener for Mediator
     usage:
     
@@ -52,7 +52,6 @@ class AbsListener:
         # override the abstract methods
         ...
     '''
-    __metaclass__ = ABCMeta
 
     @abstractmethod
     def notify(self, ev):

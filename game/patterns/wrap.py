@@ -1,12 +1,12 @@
 # -*- coding: cp1252 -*-
 # fechad de inicio ?? Enero 2014
 # fecha de lanzamiento 23 enero 2014
-## author: José Carlos Tzompantzi de Jesús
+## author: Josï¿½ Carlos Tzompantzi de Jesï¿½s
 ## license: LGPL v3
 ## si no recibiste copia de la licencia ir a http://www.gnu.org/licenses/lgpl.html
-## queda a disposición de quien quiera ocuparla y modificarla
-## no hay garantía de que funcione, ni me hago responsable del uso potencial
-## de este código
+## queda a disposiciï¿½n de quien quiera ocuparla y modificarla
+## no hay garantï¿½a de que funcione, ni me hago responsable del uso potencial
+## de este cï¿½digo
 MATHS = '__add__', '__and__', '__div__', '__floordiv__', '__invert__', '__lshift__', '__mod__', '__mul__', '__neg__', '__or__', '__radd__', '__rand__', '__rdiv__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__sub__', '__truediv__', '__xor__'
 
 DEF = ('''
@@ -26,23 +26,23 @@ def getter(self):
     return self.{1}.{0}'''
 
 def metodo(name, wrap='wrap'):
-    # esta función es externa, ya que no se me permite incluirla en la definición de una metaclase
-    # además de que el truco con funciones lambda no me funcionó
+    # esta funciï¿½n es externa, ya que no se me permite incluirla en la definiciï¿½n de una metaclase
+    # ademï¿½s de que el truco con funciones lambda no me funcionï¿½
     # this function is external for the metaclass and the
+    my_locals = {'wrap_method': None}
     if name in MATHS:
         a = DEF[0].format(name, wrap)
     else:
         a = DEF[1].format(name, wrap)
-    exec(a)
-    method = wrap_method
-    del(wrap_method)
+    exec(a, {}, my_locals)
+    method = my_locals['wrap_method']
     return method
 
 def propiedad(name, wrap='wrap'):
     # igual esta que la anterior
-    exec(PROP.format(name, wrap))
-    ret = property(getter, setter)
-    del(setter, getter)
+    my_locals = {'getter': None, 'setter': None}
+    exec(PROP.format(name, wrap), {}, my_locals)
+    ret = property(my_locals['getter'], my_locals['setter'])
     return ret
 
 class MetaWrap(type):
@@ -51,7 +51,7 @@ class MetaWrap(type):
     When instanciate that class with an argumment automagically
     adopt all methods and atributes of that argument
     '''
-    # métodos que no quiero sobreescribir
+    # mï¿½todos que no quiero sobreescribir
     invalid = ('__init__', '__new__', '__subclasshook__', '__class__', '__str__',
                '__delattr__', '__getattribute__', '__setattr__', '__repr__', '__doc__', 'wrap')
     _clss = {}
@@ -65,7 +65,7 @@ class MetaWrap(type):
             cls._clss[cls] = over_dct
 
     def __call__(cls, *params, **kwparams):
-        # obtener un parámetro o None si no hay
+        # obtener un parï¿½metro o None si no hay
         wrap = None
         if params:
             wrap = params[0]
@@ -74,10 +74,10 @@ class MetaWrap(type):
         # obtener todos los atributos del objeto
         obj_attrs = dir(wrap)
         for attr in obj_attrs:
-            # verificar que no esté sobre escrito
+            # verificar que no estï¿½ sobre escrito
             if attr not in cls._clss[cls]:
                 if callable(wrap.__getattribute__(attr)):
-                    # asignar métodos a la clase y hacer que los método tengan un valor por default
+                    # asignar mï¿½todos a la clase y hacer que los mï¿½todo tengan un valor por default
                     if attr not in cls.invalid:
                         setattr(cls, attr, metodo(attr))
                 else:
@@ -85,7 +85,7 @@ class MetaWrap(type):
                         setattr(cls, attr, propiedad(attr))
         # crear el objeto
         obj = super(MetaWrap, cls).__call__()
-        # y añadirle al vuelo el objeto a envolver
+        # y aï¿½adirle al vuelo el objeto a envolver
         obj.wrap = wrap
         return obj
 
@@ -108,15 +108,15 @@ def typewrapper(type_, name):
     return body
 ################################################################################################    
 if __name__ == '__main__':
-    ## algunos nombres no los he cambiado y es por una confusión de términos de mi parte entre
-    ## Wrapper y Patrón Decorador, los he dejado así de momento
+    ## algunos nombres no los he cambiado y es por una confusiï¿½n de tï¿½rminos de mi parte entre
+    ## Wrapper y Patrï¿½n Decorador, los he dejado asï¿½ de momento
     
     # class Decorador(object): __metaclass__ = MetaWrap
 
     # class DecoSimple(Decorador):
         # def inerte(self): pass # se comporta como mixin
         
-        # def mthod(self): # y ya puede 'sobre escribir' un método
+        # def mthod(self): # y ya puede 'sobre escribir' un mï¿½todo
             # return self.wrap.mthod() - 66
 
     # class DecoInt(Decorador): pass

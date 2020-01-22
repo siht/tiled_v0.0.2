@@ -2,12 +2,12 @@ Version of tiled with dirty rects.
 
 Dependencies:
 
-* Python 2.7.x
-* PyGame
+- Python 3.7.6
+- PyGame 2.0.0.dev7
 
 Features:
 
-* Better perfomance
+- Better perfomance
 
 Notes:
 if you want use the same dependences of mine use:

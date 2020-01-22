@@ -1,2 +1,2 @@
-import pytweener
-import imageutils
+from .pytweener import *
+from .imageutils import *

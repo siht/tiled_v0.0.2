@@ -7,7 +7,7 @@
 # Released under M.I.T License - see above url
 # Python version by Ben Harling 2009 
 # mod by me 16 -7 -2015
-import easing
+from . import easing
 
 class NoArgumentError(BaseException): pass
 
@@ -243,7 +243,7 @@ if __name__=="__main__":
             self.rot = 50
 
         def update(self):
-            print self.pos, self.rot
+            print(self.pos, self.rot)
 
         @property
         def pos(self):
@@ -260,7 +260,7 @@ if __name__=="__main__":
             return self.rot
 
         def complete(self):
-            print "I'm done tweening now mommy!"
+            print("I'm done tweening now mommy!")
 
     class Sprite(object):
         def __init__(self):
@@ -280,7 +280,7 @@ if __name__=="__main__":
     def principal():
         import time
         o = Sprite()
-        print o.x, o.y
+        print(o.x, o.y)
         mt = o.mt
         s = time.clock()
         changed = False
@@ -291,7 +291,7 @@ if __name__=="__main__":
             o.tweener.update(d)
             if mt.delta > 1.0 and not changed:
                 changed = True
-        print o.x, o.y
+        print(o.x, o.y)
 
     def main():
         import time
@@ -314,9 +314,9 @@ if __name__=="__main__":
                 T.addTween(tweenable, change=-1000, tweenTime=0.7)
                 T.addTween(mt, duration=-0.2, tweenTime=0.2)
                 changed = True
-            #print mt.duration,
-            print tst.getRotation(), tst.pos
+            #print(mt.duration)
+            print(tst.getRotation(), tst.pos)
             time.sleep(0.06)
-        print tst.getRotation(), tst.pos
+        print(tst.getRotation(), tst.pos)
 
     main()

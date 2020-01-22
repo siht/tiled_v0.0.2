@@ -1,1 +1,1 @@
-from pytweener import *
+from .pytweener import *

@@ -19,12 +19,12 @@ def load_img(name, extradir=''):
             image = image.convert()
         else:
             image = image.convert_alpha()
-    except pygame.error, message:
+    except pygame.error as message:
         print('Cannot load image:', fullname)
         raise SystemExit(message)
     return image
 
-class Surfaces(object):
+class Surfaces:
     '''class with helper methods(memoization)'''
     created = {}
     scaled = {}
@@ -60,9 +60,8 @@ class Surfaces(object):
             return Surfaces.scaled[key]
 
 @typewrapper(pygame.surface.Surface, '_surf')
-class SurfaceImage(object):
+class SurfaceImage(metaclass=FlyWeight):
     '''wrapper of a basic Surface of pygame only for images'''
-    __metaclass__ = FlyWeight
     def __init__(self, path):
         self._surf = load_img(path)
 

@@ -1,8 +1,7 @@
 from __future__ import print_function
 from models import Game
 from views import MainView
-# from controllers import CPUSpinnerController, KeyboardController
-from controllers import CPUSpinnerController, KeyboardController2
+from controllers import CPUSpinnerController, KeyboardController, KeyboardController2
 from patterns import Mediator
 
 def main():
