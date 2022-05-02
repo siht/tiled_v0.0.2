@@ -1,4 +1,3 @@
-from __future__ import print_function
 from models import Game
 from views import MainView
 from controllers import CPUSpinnerController, KeyboardController, KeyboardController2

@@ -1,13 +1,34 @@
-from __future__ import print_function
-from patterns import AbsListener
-from utils.imageutils import Surfaces, SurfaceImage
-from utils import pytweener
-from preferences import DIRECTION_UP, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_RIGHT
-from preferences import MOVING_TIME_SECONDS as MTS, FPS
-from preferences import SIZE_TILE
-from events import *
 import pygame
 import time
+
+from events import (
+    CharactorMoveEvent,
+    CharactorMoveRequest,
+    CharactorPlaceEvent,
+    TickEvent,
+)
+from patterns import AbsListener
+from preferences import (
+    DIRECTION_DOWN,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+    DIRECTION_UP,
+    FPS,
+    MOVING_TIME_SECONDS as MTS,
+    SIZE_TILE,
+)
+from utils import pytweener
+from utils.imageutils import (
+    Surfaces,
+    SurfaceImage
+)
+
+__all__ = (
+    'SectorSprite',
+    'UmiSector',
+    'CharactorSprite',
+)
+
 
 class SectorSprite(pygame.sprite.DirtySprite):
     '''sprite of a void sector'''
@@ -22,6 +43,7 @@ class SectorSprite(pygame.sprite.DirtySprite):
         self.topleft = location
         self.sector = sector
 
+
 class UmiSector(SectorSprite):
     def __init__(self, sector, group=None, location=(0,0)):
         super(UmiSector, self).__init__(sector, group, location)
@@ -29,6 +51,7 @@ class UmiSector(SectorSprite):
         self.image = Surfaces.scale(self.image, (SIZE_TILE, SIZE_TILE))
         self.rect = self.image.get_rect()
         self.rect.topleft = location
+
 
 class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
     '''sprite of the main character'''

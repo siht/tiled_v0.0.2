@@ -1,7 +1,12 @@
-from __future__ import print_function
 from patterns import FlyWeight, typewrapper
 import pygame
 import os
+
+__all__ = (
+    'load_img',
+    'Surfaces',
+    'SurfaceImage',
+)
 
 def load_img(name, extradir=''):
     '''load a image and optimize with or without alpha
@@ -20,7 +25,7 @@ def load_img(name, extradir=''):
         else:
             image = image.convert_alpha()
     except pygame.error as message:
-        print('Cannot load image:', fullname)
+        print(f'Cannot load image: {fullname}')
         raise SystemExit(message)
     return image
 

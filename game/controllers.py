@@ -1,9 +1,26 @@
-from __future__ import print_function
-from events import TickEvent, GameStartRequest, CharactorMoveRequest, QuitEvent
-from patterns import AbsListener
 from pygame.locals import QUIT, KEYDOWN, KEYUP, K_ESCAPE, K_UP, K_DOWN, K_RIGHT, K_LEFT, K_RETURN
 import pygame
-from preferences import DIRECTION_UP, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_RIGHT, FPS
+from events import (
+    TickEvent,
+    GameStartRequest,
+    CharactorMoveRequest,
+    QuitEvent,
+)
+from patterns import AbsListener
+from preferences import (
+    DIRECTION_DOWN,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+    DIRECTION_UP,
+    FPS,
+)
+
+__all__ = (
+    'CPUSpinnerController',
+    'KeyboardController',
+    'KeyboardController2',
+)
+
 
 class CPUSpinnerController(AbsListener):
     '''sends ticks to the aplication
@@ -28,6 +45,7 @@ class CPUSpinnerController(AbsListener):
         if isinstance(event, QuitEvent):
             #this will stop the while loop from running
             self.keep_going = 0
+
 
 class KeyboardController(AbsListener):
     '''...
@@ -68,6 +86,7 @@ class KeyboardController(AbsListener):
                     ev = GameStartRequest()
                 if ev:
                     self.ev_manager.post(ev)
+
 
 class KeyboardController2(AbsListener):
     '''my own controller'''

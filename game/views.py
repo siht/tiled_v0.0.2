@@ -1,11 +1,25 @@
 '''most of this script is based on scripts of sjbrown
 http://ezide.com/games/writing-games.html'''
-from __future__ import print_function
-from graphics import SectorSprite, CharactorSprite, UmiSector
-from events import *
-from patterns import AbsListener
+
 import pygame
+
+from events import (
+    TickEvent,
+    MapBuiltEvent,
+    CharactorMoveEvent,
+    CharactorPlaceEvent,
+)
+from graphics import (
+    SectorSprite,
+    CharactorSprite,
+    UmiSector
+)
+from patterns import AbsListener
 import preferences as pref
+
+__all__ = (
+    'MainView',
+)
 
 class MainView(AbsListener):
     def __init__(self, ev_manager):

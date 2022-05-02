@@ -1,13 +1,38 @@
 '''models of the game
 based on script of sjbrown
 http://ezide.com/games/writing-games.html'''
-from __future__ import print_function
-from patterns import AbsListener
-from events import *
-from preferences import SECTOR_HEIGHT, SECTOR_WIDTH
-from preferences import DIRECTION_UP,DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_RIGHT
-from preferences import MOVING_TIME_SECONDS
 import time
+
+from events import (
+    CharactorMoveEvent,
+    CharactorMoveRequest,
+    CharactorPlaceEvent,
+    CharactorPlaceRequest,
+    GameStartRequest,
+    GameStartedEvent,
+    MapBuiltEvent,
+    TickEvent,
+)
+from patterns import AbsListener
+from preferences import (
+    DIRECTION_DOWN,
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+    DIRECTION_UP,
+    MOVING_TIME_SECONDS,
+    SECTOR_HEIGHT,
+    SECTOR_WIDTH,
+)
+
+__all__ = (
+    'Game',
+    'Player',
+    'Charactor',
+    'Hero',
+    'Map',
+    'Sector',
+)
+
 
 class Game(AbsListener):
     STATE_PREPARING = 0
@@ -42,6 +67,7 @@ class Game(AbsListener):
             if self.state == self.STATE_PREPARING:
                 self.start()
 
+
 class Player(AbsListener):
     """..."""
     ev_manager = None
@@ -75,6 +101,7 @@ class Player(AbsListener):
 
     def notify(self, event):
         pass
+
 
 class Charactor(AbsListener):
     """..."""
@@ -129,7 +156,9 @@ class Charactor(AbsListener):
         elif self.is_moving and isinstance(event, TickEvent):
             self.moving()
 
+
 class Hero(Charactor): pass
+
 
 class Map(AbsListener):
     """..."""
@@ -173,6 +202,7 @@ class Map(AbsListener):
         if isinstance(event, CharactorPlaceEvent):
             sect = event.charactor.sector
             self.sector_spawn = self.sectors.index(sect)+1
+
 
 class Sector(object):
     '''map sectors, or tiles, no properties'''

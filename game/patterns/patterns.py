@@ -2,10 +2,16 @@
 classes for some design patterns that are implemented
 like plugins or are easy to implement
 '''
-from __future__ import print_function
 from weakref import WeakKeyDictionary
 from events import TickEvent
 from abc import ABCMeta, abstractmethod
+
+__all__ = (
+    'Mediator',
+    'AbsListener',
+    'FlyWeight',
+    'Singleton'
+)
 
 class Mediator:
     '''
@@ -19,7 +25,7 @@ class Mediator:
         self.event_queue = []
 
     def debug(self, ev):
-        print("   Message: " + ev.name)
+        print(f"   Message: {ev.name}")
 
     def registerListener(self, listener):
         #if not hasattr( listener, "Notify" ): raise blah blah...
