@@ -1,10 +1,21 @@
-from pygame.locals import QUIT, KEYDOWN, KEYUP, K_ESCAPE, K_UP, K_DOWN, K_RIGHT, K_LEFT, K_RETURN
 import pygame
+from pygame.locals import (
+    K_DOWN,
+    K_ESCAPE,
+    K_LEFT,
+    K_RETURN,
+    K_RIGHT,
+    K_UP,
+    KEYDOWN,
+    KEYUP,
+    QUIT,
+)
+
 from events import (
-    TickEvent,
-    GameStartRequest,
     CharactorMoveRequest,
+    GameStartRequest,
     QuitEvent,
+    TickEvent,
 )
 from patterns import AbsListener
 from preferences import (

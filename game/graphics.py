@@ -19,14 +19,14 @@ from preferences import (
 )
 from utils import pytweener
 from utils.imageutils import (
+    SurfaceImage,
     Surfaces,
-    SurfaceImage
 )
 
 __all__ = (
+    'CharactorSprite',
     'SectorSprite',
     'UmiSector',
-    'CharactorSprite',
 )
 
 

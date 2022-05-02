@@ -8,8 +8,8 @@ from events import (
     CharactorMoveRequest,
     CharactorPlaceEvent,
     CharactorPlaceRequest,
-    GameStartRequest,
     GameStartedEvent,
+    GameStartRequest,
     MapBuiltEvent,
     TickEvent,
 )
@@ -25,11 +25,11 @@ from preferences import (
 )
 
 __all__ = (
-    'Game',
-    'Player',
     'Charactor',
+    'Game',
     'Hero',
     'Map',
+    'Player',
     'Sector',
 )
 

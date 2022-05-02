@@ -7,9 +7,9 @@ from events import TickEvent
 from abc import ABCMeta, abstractmethod
 
 __all__ = (
-    'Mediator',
     'AbsListener',
     'FlyWeight',
+    'Mediator',
     'Singleton'
 )
 

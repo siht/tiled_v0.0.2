@@ -9,16 +9,16 @@ http://ezide.com/games/writing-games.html
 # things like file system access, or allocating huge amounts of memory
 
 __all__ = (
-    'TickEvent',
-    'SecondEvent',
-    'QuitEvent',
-    'MapBuiltEvent',
-    'GameStartRequest',
-    'GameStartedEvent',
-    'CharactorMoveRequest',
     'CharactorMoveEvent',
-    'CharactorPlaceRequest',
+    'CharactorMoveRequest',
     'CharactorPlaceEvent',
+    'CharactorPlaceRequest',
+    'GameStartedEvent',
+    'GameStartRequest',
+    'MapBuiltEvent',
+    'QuitEvent',
+    'SecondEvent',
+    'TickEvent',
 )
 
 

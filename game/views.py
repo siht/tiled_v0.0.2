@@ -4,14 +4,14 @@ http://ezide.com/games/writing-games.html'''
 import pygame
 
 from events import (
-    TickEvent,
-    MapBuiltEvent,
     CharactorMoveEvent,
     CharactorPlaceEvent,
+    MapBuiltEvent,
+    TickEvent,
 )
 from graphics import (
-    SectorSprite,
     CharactorSprite,
+    SectorSprite,
     UmiSector
 )
 from patterns import AbsListener

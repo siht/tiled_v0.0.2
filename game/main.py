@@ -1,7 +1,11 @@
+from controllers import (
+    CPUSpinnerController,
+    KeyboardController,
+    KeyboardController2,
+)
 from models import Game
-from views import MainView
-from controllers import CPUSpinnerController, KeyboardController, KeyboardController2
 from patterns import Mediator
+from views import MainView
 
 def main():
     evt_mgr = Mediator()

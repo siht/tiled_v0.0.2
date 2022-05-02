@@ -4,8 +4,8 @@ import os
 
 __all__ = (
     'load_img',
-    'Surfaces',
     'SurfaceImage',
+    'Surfaces',
 )
 
 def load_img(name, extradir=''):
