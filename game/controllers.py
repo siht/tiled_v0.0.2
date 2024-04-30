@@ -123,14 +123,19 @@ class KeyboardController(AbsListener):
 
 
 class KeyboardController2(AbsListener):
-    '''my own controller'''
+    '''this controller allows to send multiple movement events until keys isnt pressed'''
+    MOVEMENT_KEYS = (K_UP, K_DOWN, K_RIGHT, K_LEFT)
+    KEY_DIRECTIONS = {
+        K_UP: DIRECTION_UP,
+        K_DOWN: DIRECTION_DOWN,
+        K_LEFT: DIRECTION_LEFT,
+        K_RIGHT: DIRECTION_RIGHT,
+    }
+
     def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
-
-        # self.any_key_down = False
         self.movement_keys_pressed = []
-        self.movement_keys = (K_UP, K_DOWN, K_RIGHT, K_LEFT)
 
     def _somebody_close_window(self, event: PygameEvent) -> bool:
         return event.type == QUIT
@@ -145,13 +150,13 @@ class KeyboardController2(AbsListener):
         return event.type == KEYDOWN and event.key == K_RETURN
 
     def _movement_keys_was_pressed(self, event: PygameEvent) -> bool:
-        return event.key in self.movement_keys and event.key not in self.movement_keys_pressed
+        return event.key in self.MOVEMENT_KEYS and event.key not in self.movement_keys_pressed
 
     def _some_key_was_stopped_pressing(self, event: PygameEvent) -> bool:
         return event.type == KEYUP
 
     def _movement_keys_still_pressed(self, event: PygameEvent) -> bool:
-        return event.key in self.movement_keys
+        return event.key in self.MOVEMENT_KEYS
 
     def _update_keys_pressed(self, event: PygameEvent) -> None:
         if self._keyboard_is_pressed(event):
@@ -162,23 +167,16 @@ class KeyboardController2(AbsListener):
                 index = self.movement_keys_pressed.index(event.key)
                 del(self.movement_keys_pressed[index])
 
-    def _get_last_key_pressed(self):
+    def _get_last_movement_key_pressed(self):
         return self.movement_keys_pressed[0]
 
     def _get_direction_movement(self, key: int) -> int:
-        if key == K_UP:
-            return DIRECTION_UP
-        elif key == K_DOWN:
-            return DIRECTION_DOWN
-        elif key == K_LEFT:
-            return DIRECTION_LEFT
-        elif key == K_RIGHT:
-            return DIRECTION_RIGHT
+        return self.KEY_DIRECTIONS.get(key, None)
 
     def notify(self, event: TypeEvent):
         if isinstance(event, TickEvent):
             ev = None
-            for pygame_event in pygame.event.get(): #va de cajon
+            for pygame_event in pygame.event.get():
                 if self._somebody_close_window(pygame_event):
                     ev = QuitEvent()
                 elif self._escape_was_pressed(pygame_event):
@@ -189,7 +187,7 @@ class KeyboardController2(AbsListener):
                 self._update_keys_pressed(pygame_event)
                 ########################################################
             if not ev and self.movement_keys_pressed:
-                last_key_pressed = self._get_last_key_pressed()
+                last_key_pressed = self._get_last_movement_key_pressed()
                 direction = self._get_direction_movement(last_key_pressed)
                 ev = CharactorMoveRequest(direction)
             if ev:
