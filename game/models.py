@@ -1,7 +1,12 @@
 '''models of the game
 based on script of sjbrown
 http://ezide.com/games/writing-games.html'''
+from __future__ import annotations
 import time
+from typing import (
+    List,
+    Union,
+)
 
 from events import (
     CharactorMoveEvent,
@@ -12,8 +17,12 @@ from events import (
     GameStartRequest,
     MapBuiltEvent,
     TickEvent,
+    TypeEvent,
 )
-from patterns import AbsListener
+from patterns import (
+    AbsListener,
+    Mediator,
+)
 from preferences import (
     DIRECTION_DOWN,
     DIRECTION_LEFT,
@@ -39,18 +48,18 @@ class Game(AbsListener):
     STATE_RUNNING = 1
     STATE_PAUSED = 2
 
-    state = STATE_PREPARING
-    ev_manager = None
-    players = []
-    max_players = 1
-    map = None
+    state: int = STATE_PREPARING
+    ev_manager: Union[Mediator, None] = None
+    players: List[Player] = []
+    max_players: int = 1
+    map: Union[Map, None] = None
 
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
         self.reset(ev_manager)
 
-    def reset(self, ev_manager):
+    def reset(self, ev_manager: Mediator):
         self.state = self.STATE_PREPARING
         self.players = [Player(ev_manager)]
         self.max_players = 1
@@ -62,7 +71,7 @@ class Game(AbsListener):
         ev = GameStartedEvent(self)
         self.ev_manager.post(ev)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, GameStartRequest):
             if self.state == self.STATE_PREPARING:
                 self.start()
@@ -70,12 +79,12 @@ class Game(AbsListener):
 
 class Player(AbsListener):
     """..."""
-    ev_manager = None
-    game = None
-    charactors = None
+    ev_manager: Union[Mediator, None] = None
+    game: Union[Game, None] = None
+    charactors: Union[List[Charactor], None] = None
     placeable_charactor_classes = None
     
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
         self.game = None
@@ -93,13 +102,13 @@ class Player(AbsListener):
     def getMoveData(self):
         return [self.charactors[0]]
 
-    def getGame(self, game):
+    def getGame(self, game: Game):
         self.game = game
 
-    def getData(self, playerDict):
-        self.name = playerDict['name']
+    def getData(self, player_dict: dict):
+        self.name = player_dict['name']
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         pass
 
 
@@ -108,12 +117,12 @@ class Charactor(AbsListener):
     STATE_INACTIVE = 0
     STATE_ACTIVE = 1
 
-    ev_manager = None
-    sector = None
-    state = STATE_INACTIVE
-    is_moving = 0
+    ev_manager: Union[Mediator, None] = None
+    sector: Union[Sector, None] = None
+    state: int = STATE_INACTIVE
+    is_moving: int = 0
 
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.move_time = MOVING_TIME_SECONDS
         self.ev_manager.registerListener( self )
@@ -121,7 +130,7 @@ class Charactor(AbsListener):
         self.sector = None
         self.state = Charactor.STATE_INACTIVE
 
-    def move(self, direction):
+    def move(self, direction: int):
         if self.state == Charactor.STATE_INACTIVE:
             return
 
@@ -138,14 +147,14 @@ class Charactor(AbsListener):
             self.sector = self.__new_sector
             self.ev_manager.post(ev)
 
-    def place(self, sector):
+    def place(self, sector: Sector):
         self.sector = sector
         self.state = Charactor.STATE_ACTIVE
 
         ev = CharactorPlaceEvent(self)
         self.ev_manager.post(ev)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, CharactorPlaceRequest):
             self.place(event.sector)
         elif isinstance(event, CharactorMoveRequest) and not self.is_moving:
@@ -165,12 +174,12 @@ class Map(AbsListener):
     STATE_PREPARING = 0
     STATE_BUILT = 1
     
-    ev_manager = None
-    state = STATE_PREPARING
-    sectors = []
-    sector_spawn = 0
+    ev_manager: Union[Mediator, None] = None
+    state: int = STATE_PREPARING
+    sectors: List[Sector] = []
+    sector_spawn: int = 0
 
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
         self.state = self.STATE_PREPARING
@@ -198,7 +207,7 @@ class Map(AbsListener):
         ev = MapBuiltEvent(self)
         self.ev_manager.post(ev)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, CharactorPlaceEvent):
             sect = event.charactor.sector
             self.sector_spawn = self.sectors.index(sect)+1
@@ -206,10 +215,10 @@ class Map(AbsListener):
 
 class Sector(object):
     '''map sectors, or tiles, no properties'''
-    ev_manager = None
-    neighbors = None
+    ev_manager: Union[Mediator, None] = None
+    neighbors: List[Union[Sector, None]] = list()
     
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.neighbors = list(range(4))
         self.neighbors[DIRECTION_UP] = None
@@ -217,6 +226,6 @@ class Sector(object):
         self.neighbors[DIRECTION_LEFT] = None
         self.neighbors[DIRECTION_RIGHT] = None
 
-    def movePossible(self, direction):
+    def movePossible(self, direction: int):
         if self.neighbors[direction]:
             return 1

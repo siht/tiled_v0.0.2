@@ -8,13 +8,22 @@ from events import (
     CharactorPlaceEvent,
     MapBuiltEvent,
     TickEvent,
+    TypeEvent,
 )
 from graphics import (
     CharactorSprite,
     SectorSprite,
     UmiSector
 )
-from patterns import AbsListener
+from models import (
+    Charactor,
+    Map,
+    Sector,
+)
+from patterns import (
+    AbsListener,
+    Mediator,
+)
 import preferences as pref
 
 __all__ = (
@@ -22,7 +31,7 @@ __all__ = (
 )
 
 class MainView(AbsListener):
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
         pygame.init()
@@ -35,7 +44,7 @@ class MainView(AbsListener):
         self.front_sprites = pygame.sprite.LayeredDirty()
         self.dirty_rects = None
 
-    def showMap(self, game_map): # improve this method
+    def showMap(self, game_map: Map): # improve this method
         self.window.blit(self.background, (0, 0))
         pygame.display.flip()
         size = pref.SIZE_TILE
@@ -54,24 +63,24 @@ class MainView(AbsListener):
             self.background.blit(new_sprite.image, new_sprite.rect)
             new_sprite = None
 
-    def getCharactorSprite(self, charactor):
+    def getCharactorSprite(self, charactor: Charactor):
         #there will be only one
         for s in self.front_sprites:
             return s
         return None
 
-    def getSectorSprite(self, sector):
+    def getSectorSprite(self, sector: Sector):
         for s in self.back_sprites:
             if hasattr(s, "sector") and s.sector == sector:
                 return s
 
-    def putCharactor(self, charactor):
+    def putCharactor(self, charactor: Charactor):
         sector = charactor.sector
         charactor_sprite = CharactorSprite(self.ev_manager, charactor, self.front_sprites)
         sector_sprite = self.getSectorSprite(sector)
         charactor_sprite.rect.midbottom = sector_sprite.rect.midbottom
 
-    def showCharactor(self, charactor):
+    def showCharactor(self, charactor: Charactor):
         sector = charactor.sector
         charactor_sprite = self.getCharactorSprite(charactor)
         sector_sprite = self.getSectorSprite(sector)
@@ -85,7 +94,7 @@ class MainView(AbsListener):
         dirty_rects2 = self.front_sprites.draw(self.window)
         self.dirty_rects = dirty_rects1 + dirty_rects2
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, TickEvent):
             self.draw()
             if self.dirty_rects:

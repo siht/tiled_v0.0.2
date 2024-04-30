@@ -16,8 +16,12 @@ from events import (
     GameStartRequest,
     QuitEvent,
     TickEvent,
+    TypeEvent,
 )
-from patterns import AbsListener
+from patterns import (
+    AbsListener,
+    Mediator,
+)
 from preferences import (
     DIRECTION_DOWN,
     DIRECTION_LEFT,
@@ -52,7 +56,7 @@ class CPUSpinnerController(AbsListener):
             ev = TickEvent(aps)
             self.ev_manager.post(ev)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, QuitEvent):
             #this will stop the while loop from running
             self.keep_going = 0
@@ -62,11 +66,11 @@ class KeyboardController(AbsListener):
     '''...
     based on script of sjbrown
     http://ezide.com/games/writing-games.html'''
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, TickEvent):
             #Handle Input Events
             for event in pygame.event.get():
@@ -101,7 +105,7 @@ class KeyboardController(AbsListener):
 
 class KeyboardController2(AbsListener):
     '''my own controller'''
-    def __init__(self, ev_manager):
+    def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.ev_manager.registerListener(self)
 
@@ -109,7 +113,7 @@ class KeyboardController2(AbsListener):
         self.keys_pressed = []
         self.available_keys = (K_UP, K_DOWN, K_RIGHT, K_LEFT)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         if isinstance(event, TickEvent):
             ev = None
             for event in pygame.event.get(): #va de cajon

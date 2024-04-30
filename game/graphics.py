@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import pygame
 import time
 
@@ -6,8 +8,13 @@ from events import (
     CharactorMoveRequest,
     CharactorPlaceEvent,
     TickEvent,
+    TypeEvent,
 )
-from patterns import AbsListener
+from models import Sector
+from patterns import (
+    AbsListener,
+    Mediator,
+)
 from preferences import (
     DIRECTION_DOWN,
     DIRECTION_LEFT,
@@ -32,7 +39,11 @@ __all__ = (
 
 class SectorSprite(pygame.sprite.DirtySprite):
     '''sprite of a void sector'''
-    def __init__(self, sector, group=None, location=(0,0)):
+    def __init__(
+            self,
+            sector: Sector,
+            group=None,
+            location:Tuple[int, int]=(0, 0)):
         super(SectorSprite, self).__init__(group)
         grounds = SurfaceImage('Tileset- ground.png')
         default_grounds = Surfaces.listSurface(grounds, (13, 8))
@@ -45,7 +56,11 @@ class SectorSprite(pygame.sprite.DirtySprite):
 
 
 class UmiSector(SectorSprite):
-    def __init__(self, sector, group=None, location=(0,0)):
+    def __init__(
+            self,
+            sector: Sector,
+            group=None,
+            location: Tuple[int, int]=(0, 0)):
         super(UmiSector, self).__init__(sector, group, location)
         self.image = self.images[40]
         self.image = Surfaces.scale(self.image, (SIZE_TILE, SIZE_TILE))
@@ -57,7 +72,12 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
     '''sprite of the main character'''
     STAND = 1
 
-    def __init__(self, ev_manager, charactor, group=None, location=(0,0)):
+    def __init__(
+            self,
+            ev_manager: Mediator,
+            charactor,
+            group=None,
+            location: Tuple[int, int]=(0, 0)):
         super(CharactorSprite, self).__init__(group)
 
         self.ev_manager = ev_manager
@@ -88,7 +108,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
         self.__has_change = 0 # to change images when is moving in a time
         self.__delay = MTS*(1/2.) # delay to change a certain frame
 
-    def move(self, direction):
+    def move(self, direction: int):
         '''when a charactor starts to move'''
         self.is_moving = 1
         self.dirty = 1
@@ -131,7 +151,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
         self.is_moving = 0
         self.__has_change = 0
 
-    def facingTo(self, direction):
+    def facingTo(self, direction: int):
         '''change the facing view if charactor can't move'''
         if direction != self.last_direction:
             self.dirty = 1
@@ -142,7 +162,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
         self.dirty = 1
         self.__tweener.update(FPS/1000.0)
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent):
         '''notifies this object about what method must has has execute'''
         # if not moving and system has asks to move
         if not self.is_moving and isinstance(event, CharactorMoveRequest):

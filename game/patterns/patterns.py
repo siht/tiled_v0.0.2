@@ -2,16 +2,29 @@
 classes for some design patterns that are implemented
 like plugins or are easy to implement
 '''
+from __future__ import annotations
+from abc import (
+    ABCMeta,
+    abstractmethod,
+)
+from typing import List
 from weakref import WeakKeyDictionary
-from events import TickEvent
-from abc import ABCMeta, abstractmethod
+
+from events import (
+    TickEvent,
+    TypeEvent,
+    Type,
+)
+
 
 __all__ = (
     'AbsListener',
     'FlyWeight',
     'Mediator',
-    'Singleton'
+    'Singleton',
+    'TypeListener',
 )
+
 
 class Mediator:
     '''
@@ -21,21 +34,21 @@ class Mediator:
     The heart of MVC
     http://ezide.com/games/writing-games.html'''
     def __init__(self):
-        self.listeners = WeakKeyDictionary()
-        self.event_queue = []
+        self.listeners: WeakKeyDictionary[TypeListener, int] = WeakKeyDictionary()
+        self.event_queue: List[TypeEvent] = []
 
-    def debug(self, ev):
+    def debug(self, ev: TypeEvent):
         print(f"   Message: {ev.name}")
 
-    def registerListener(self, listener):
-        #if not hasattr( listener, "Notify" ): raise blah blah...
+    def registerListener(self, listener: TypeListener):
+        #if not hasattr(listener, "Notify"): raise blah blah...
         self.listeners[listener] = 1
 
-    def unregisterListener(self, listener):
+    def unregisterListener(self, listener: TypeListener):
         if listener in self.listeners.keys():
             del self.listeners[listener]
-        
-    def post(self, event):
+
+    def post(self, event: TypeEvent):
         if not isinstance(event, TickEvent): 
             self.event_queue.append(event)
         else:
@@ -50,6 +63,7 @@ class Mediator:
             for listener in list(self.listeners):
                 listener.notify(event)
 
+
 class AbsListener(metaclass=ABCMeta):
     '''Listener for Mediator
     usage:
@@ -60,8 +74,12 @@ class AbsListener(metaclass=ABCMeta):
     '''
 
     @abstractmethod
-    def notify(self, ev):
+    def notify(self, ev: TypeEvent):
         pass
+
+
+TypeListener = Type[AbsListener]
+
 
 class FlyWeight(type):
     '''
@@ -84,6 +102,7 @@ class FlyWeight(type):
             instance = type.__call__(cls, key, *args, **kw)
             cls.__instances[key] = instance
         return instance
+
 
 class Singleton(type):
     '''
