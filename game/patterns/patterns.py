@@ -36,32 +36,45 @@ class Mediator:
     def __init__(self):
         self.listeners: WeakKeyDictionary[TypeListener, int] = WeakKeyDictionary()
         self.event_queue: List[TypeEvent] = []
-
-    def debug(self, ev: TypeEvent):
-        print(f"   Message: {ev.name}")
+        self.listeners_to_add: List[TypeListener] = []
+        self.listeners_to_remove: List[TypeListener] = []
 
     def registerListener(self, listener: TypeListener):
-        #if not hasattr(listener, "Notify"): raise blah blah...
-        self.listeners[listener] = 1
+        self.listeners_to_add.append(listener)
+
+    def actuallyUpdateListeners(self):
+        for listener in self.listeners_to_add:
+            self.listeners[listener] = 1
+        for listener in self.listeners_to_remove:
+            if listener in self.listeners:
+                del self.listeners[listener]
 
     def unregisterListener(self, listener: TypeListener):
-        if listener in self.listeners.keys():
-            del self.listeners[listener]
+        self.listeners_to_remove.append(listener)
 
     def post(self, event: TypeEvent):
-        if not isinstance(event, TickEvent): 
-            self.event_queue.append(event)
-        else:
-            events = self.event_queue[:]
-            self.event_queue = []
-            while len(events) > 0:
-                ev = events.pop(0)
-                self.debug(ev)
-                for listener in list(self.listeners):
-                    listener.notify(ev)
-            #at the end, notify listeners of the Tick event
-            for listener in list(self.listeners):
+        self.event_queue.append(event)
+        if isinstance(event, TickEvent):
+            # Consume the event queue every Tick.
+            self.actuallyUpdateListeners()
+            self.consumeEventQueue()
+
+    def consumeEventQueue(self):
+        i = 0
+        while i < len(self.event_queue):
+            event = self.event_queue[i]
+            for listener in self.listeners:
+                # Note: a side effect of notifying the listener
+                # could be that more events are put on the queue
+                # or listeners could Register / Unregister
                 listener.notify(event)
+            i += 1
+            if self.listeners_to_add:
+                self.actuallyUpdateListeners()
+        #all code paths that could possibly add more events to 
+        # the eventQueue have been exhausted at this point, so 
+        # it's safe to empty the queue
+        self.event_queue = []
 
 
 class AbsListener(metaclass=ABCMeta):
