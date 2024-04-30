@@ -1,5 +1,6 @@
 '''equations for easing elastic'''
 import math
+
 def easeIn (t, b, c, d, a = 0, p = 0):
     if t==0: return b
     t = t / d            
@@ -13,6 +14,7 @@ def easeIn (t, b, c, d, a = 0, p = 0):
     t = t - 1            
     return - (a * (2**(10 * t)) * math.sin((t*d-s) * (2 * math.pi) / p)) + b
 
+
 def easeOut (t, b, c, d, a = 0, p = 0):
     if t == 0: return b
     t = t / d
@@ -24,6 +26,7 @@ def easeOut (t, b, c, d, a = 0, p = 0):
     else:
         s = p / (2 * math.pi) * math.asin(c / a)
     return a * (2**(-10 * t)) * math.sin((t * d - s) * (2 * math.pi) / p) + c + b
+
 
 def easeInOut (t, b, c, d, a = 0, p = 0):
     if t == 0: return b

@@ -10,7 +10,10 @@ from events import (
     TickEvent,
     TypeEvent,
 )
-from models import Sector
+from models import (
+    Charactor,
+    Sector,
+)
 from patterns import (
     AbsListener,
     Mediator,
@@ -75,7 +78,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
     def __init__(
             self,
             ev_manager: Mediator,
-            charactor,
+            charactor: Charactor,
             group=None,
             location: Tuple[int, int]=(0, 0)):
         super(CharactorSprite, self).__init__(group)

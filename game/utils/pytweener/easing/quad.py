@@ -3,9 +3,11 @@ def easeIn (t, b, c, d):
     t = t / d
     return c * t**2 + b
 
+
 def easeOut (t, b, c, d):
     t = t / d
     return -c * t * (t-2) + b
+
 
 def easeInOut (t, b, c, d):
     t = t / (d * 0.5)

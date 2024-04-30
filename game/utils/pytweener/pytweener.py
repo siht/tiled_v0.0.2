@@ -11,6 +11,7 @@ from . import easing
 
 class NoArgumentError(BaseException): pass
 
+
 class Tweener(object):
     def __init__(self, duration=0.5, tween=None):
         """Tweener
@@ -102,6 +103,7 @@ class Tweener(object):
                 removable.append(t)
         for t in removable:
             self.currentTweens.remove(t)
+
 
 class Tween(object):
     def __init__(self, obj, tduration, tweenType, completeFunction, updateFunction, delay, **kwargs):
@@ -228,6 +230,7 @@ class Tween(object):
             without calling the complete function"""
         self.complete = True
 
+
 class Tweenable(object):
     def __init__(self, start, change):
         """Tweenable:
@@ -235,6 +238,7 @@ class Tweenable(object):
             these are normally only created by Tweens"""
         self.startValue = start
         self.change = change
+
 
 if __name__=="__main__":
     class TweenTestObject:

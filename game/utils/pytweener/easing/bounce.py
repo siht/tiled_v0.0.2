@@ -13,8 +13,10 @@ def easeOut (t, b, c, d):
         t = t - 2.625 / 2.75
         return c * (7.5625 * t**2 + 0.984375) + b
 
+
 def easeIn (t, b, c, d):
     return c - easeOut(d-t, 0, c, d) + b
+
 
 def easeInOut (t, b, c, d):
     if t < d * 0.5:

@@ -173,7 +173,7 @@ class Map(AbsListener):
     """..."""
     STATE_PREPARING = 0
     STATE_BUILT = 1
-    
+
     ev_manager: Union[Mediator, None] = None
     state: int = STATE_PREPARING
     sectors: List[Sector] = []
@@ -217,7 +217,7 @@ class Sector(object):
     '''map sectors, or tiles, no properties'''
     ev_manager: Union[Mediator, None] = None
     neighbors: List[Union[Sector, None]] = list()
-    
+
     def __init__(self, ev_manager: Mediator):
         self.ev_manager = ev_manager
         self.neighbors = list(range(4))
@@ -226,6 +226,6 @@ class Sector(object):
         self.neighbors[DIRECTION_LEFT] = None
         self.neighbors[DIRECTION_RIGHT] = None
 
-    def movePossible(self, direction: int):
+    def movePossible(self, direction: int) -> bool:
         if self.neighbors[direction]:
-            return 1
+            return True

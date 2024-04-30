@@ -29,6 +29,7 @@ def load_img(name, extradir=''):
         raise SystemExit(message)
     return image
 
+
 class Surfaces:
     '''class with helper methods(memoization)'''
     created = {}
@@ -63,6 +64,7 @@ class Surfaces:
             return out
         else:
             return Surfaces.scaled[key]
+
 
 @typewrapper(pygame.surface.Surface, '_surf')
 class SurfaceImage(metaclass=FlyWeight):
