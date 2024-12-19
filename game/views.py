@@ -28,6 +28,7 @@ import preferences as pref
 
 __all__ = (
     'MainView',
+    'TextLogView',
 )
 
 class MainView(AbsListener):
@@ -71,7 +72,7 @@ class MainView(AbsListener):
 
     def getSectorSprite(self, sector: Sector):
         for s in self.back_sprites:
-            if hasattr(s, "sector") and s.sector == sector:
+            if hasattr(s, 'sector') and s.sector == sector:
                 return s
 
     def putCharactor(self, charactor: Charactor):
@@ -107,3 +108,18 @@ class MainView(AbsListener):
             self.putCharactor(event.charactor)
         elif isinstance(event, CharactorMoveEvent):
             self.showCharactor(event.charactor)
+
+
+class TextLogView(AbsListener):
+    '''...'''
+    def __init__(self, ev_manager: Mediator):
+        self.ev_manager = ev_manager
+        self.ev_manager.registerListener(self)
+
+    def notify(self, event: TypeEvent):
+        if isinstance(event, CharactorPlaceEvent):
+            print(f'{event.name} at {event.charactor.sector}')
+        elif isinstance(event, CharactorMoveEvent):
+            print(f'{event.name} to {event.charactor.sector}')
+        elif not isinstance(event, TickEvent):
+            print(f'{event.name}')
