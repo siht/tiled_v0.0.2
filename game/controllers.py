@@ -220,4 +220,5 @@ class NetworkClientController(AbsListener, pb.Root):
         return 1
 
     def notify(self, event: TypeEvent) -> None:
+        '''implementation no needed'''
         pass
