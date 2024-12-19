@@ -1,14 +1,16 @@
 # basic settings
-WINDOW_SIZE = (800, 600)
+from typing import Tuple
+
+WINDOW_SIZE: Tuple[int, int] = (800, 600)
 SIZE_TILE: int = 72
 SECTOR_HEIGHT: int = 7
 SECTOR_WIDTH: int = 7
 # some colors
-RED = (255, 0, 0, 0)
-GREEN = (0, 255, 0, 0)
-BLUE = (0, 0, 255, 0)
-BLACK = (0, 0, 0, 0)
-WHITE = (255, 255, 255, 0)
+RED: Tuple[int, int, int, int] = (255, 0, 0, 0)
+GREEN: Tuple[int, int, int, int] = (0, 255, 0, 0)
+BLUE: Tuple[int, int, int, int] = (0, 0, 255, 0)
+BLACK: Tuple[int, int, int, int] = (0, 0, 0, 0)
+WHITE: Tuple[int, int, int, int] = (255, 255, 255, 0)
 # common directions
 DIRECTION_UP: int = 0
 DIRECTION_DOWN: int = 1
