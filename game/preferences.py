@@ -18,3 +18,4 @@ DIRECTION_RIGHT = 3
 MOVING_TIME_SECONDS = .3
 # frames per second
 FPS = 30
+PORT = 8080
