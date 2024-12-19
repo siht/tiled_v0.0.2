@@ -1,7 +1,18 @@
 '''most of this script is based on scripts of sjbrown
 http://ezide.com/games/writing-games.html'''
 
+from typing import (
+    List,
+    Union,
+)
+
 import pygame
+
+from pygame import (
+    Rect,
+    Surface,
+)
+from pygame.sprite import LayeredDirty
 
 from events import (
     CharactorMoveEvent,
@@ -24,7 +35,12 @@ from patterns import (
     AbsListener,
     Mediator,
 )
-import preferences as pref
+from preferences import (
+    BLACK,
+    SECTOR_WIDTH,
+    SIZE_TILE,
+    WINDOW_SIZE,
+)
 
 __all__ = (
     'MainView',
@@ -32,62 +48,62 @@ __all__ = (
 )
 
 class MainView(AbsListener):
-    def __init__(self, ev_manager: Mediator):
-        self.ev_manager = ev_manager
+    def __init__(self, ev_manager: Mediator) -> None:
+        self.ev_manager: Mediator = ev_manager
         self.ev_manager.registerListener(self)
         pygame.init()
-        self.window = pygame.display.set_mode(pref.WINDOW_SIZE)
+        self.window: Surface = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption('my first game mvc')
-        self.background = pygame.Surface(self.window.get_size())
-        self.background.fill(pref.BLACK)
-        self.back_sprites = pygame.sprite.LayeredDirty()
+        self.background: Surface = Surface(self.window.get_size())
+        self.background.fill(BLACK)
+        self.back_sprites: LayeredDirty = LayeredDirty()
         pygame.display.flip()
-        self.front_sprites = pygame.sprite.LayeredDirty()
-        self.dirty_rects = None
+        self.front_sprites: LayeredDirty = LayeredDirty()
+        self.dirty_rects: Union[List[Rect], None] = None
 
-    def showMap(self, game_map: Map): # improve this method
+    def showMap(self, game_map: Map) -> None: # improve this method
         self.window.blit(self.background, (0, 0))
         pygame.display.flip()
-        size = pref.SIZE_TILE
-        position_rect = pygame.Rect((0, size, size, size))
+        size = SIZE_TILE
+        position_rect: Rect = Rect((0, size, size, size))
 
         i = 0
         for sector in game_map.sectors:
-            if i < pref.SECTOR_WIDTH:
+            if i < SECTOR_WIDTH:
                 position_rect = position_rect.move(size,0)
             else:
                 i = 0
-                position_rect = position_rect.move(-(size*(pref.SECTOR_WIDTH-1)), size)
+                position_rect = position_rect.move(-(size*(SECTOR_WIDTH-1)), size)
             i += 1
             new_sprite = UmiSector(sector, self.back_sprites)
             new_sprite.rect = position_rect
             self.background.blit(new_sprite.image, new_sprite.rect)
             new_sprite = None
 
-    def getCharactorSprite(self, charactor: Charactor):
+    def getCharactorSprite(self, charactor: Charactor) -> Union[LayeredDirty, None]:
         #there will be only one
         for s in self.front_sprites:
             return s
         return None
 
-    def getSectorSprite(self, sector: Sector):
+    def getSectorSprite(self, sector: Sector) -> Sector:
         for s in self.back_sprites:
             if hasattr(s, 'sector') and s.sector == sector:
                 return s
 
-    def putCharactor(self, charactor: Charactor):
+    def putCharactor(self, charactor: Charactor) -> None:
         sector = charactor.sector
         charactor_sprite = CharactorSprite(self.ev_manager, charactor, self.front_sprites)
         sector_sprite = self.getSectorSprite(sector)
         charactor_sprite.rect.midbottom = sector_sprite.rect.midbottom
 
-    def showCharactor(self, charactor: Charactor):
+    def showCharactor(self, charactor: Charactor) -> None:
         sector = charactor.sector
         charactor_sprite = self.getCharactorSprite(charactor)
         sector_sprite = self.getSectorSprite(sector)
         charactor_sprite.rect.midbottom = sector_sprite.rect.midbottom
 
-    def draw(self):
+    def draw(self) -> None:
         # self.back_sprites.clear(self.window, self.background)
         self.front_sprites.clear(self.window, self.background)
 
@@ -95,7 +111,7 @@ class MainView(AbsListener):
         dirty_rects2 = self.front_sprites.draw(self.window)
         self.dirty_rects = dirty_rects1 + dirty_rects2
 
-    def notify(self, event: TypeEvent):
+    def notify(self, event: TypeEvent) -> None:
         if isinstance(event, TickEvent):
             self.draw()
             if self.dirty_rects:
@@ -112,11 +128,11 @@ class MainView(AbsListener):
 
 class TextLogView(AbsListener):
     '''...'''
-    def __init__(self, ev_manager: Mediator):
-        self.ev_manager = ev_manager
+    def __init__(self, ev_manager: Mediator) -> None:
+        self.ev_manager: Mediator = ev_manager
         self.ev_manager.registerListener(self)
 
-    def notify(self, event: TypeEvent):
+    def notify(self, event: TypeEvent) -> None:
         if isinstance(event, CharactorPlaceEvent):
             print(f'{event.name} at {event.charactor.sector}')
         elif isinstance(event, CharactorMoveEvent):
