@@ -16,11 +16,15 @@ from events import (
     Type,
 )
 
+def debug(msg):
+	print(msg)
+
 
 __all__ = (
     'AbsListener',
     'FlyWeight',
     'Mediator',
+    'NoTickMediator',
     'Singleton',
     'TypeListener',
 )
@@ -53,6 +57,8 @@ class Mediator:
         self.listeners_to_remove.append(listener)
 
     def post(self, event: TypeEvent):
+        if not isinstance(event, TickEvent):
+            debug(f'     Message:  {event.name}')
         self.event_queue.append(event)
         if isinstance(event, TickEvent):
             # Consume the event queue every Tick.
@@ -75,6 +81,20 @@ class Mediator:
         # the eventQueue have been exhausted at this point, so 
         # it's safe to empty the queue
         self.event_queue = []
+
+
+class NoTickMediator(Mediator):
+    def __init__(self):
+        super().__init__()
+        self._lock = False
+
+    def post(self, event):
+        super().post(event)
+        if not self._lock:
+            self._lock = True
+            self.actuallyUpdateListeners()
+            self.consumeEventQueue()
+            self._lock = False
 
 
 class AbsListener(metaclass=ABCMeta):

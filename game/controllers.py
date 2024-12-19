@@ -11,6 +11,7 @@ from pygame.locals import (
     KEYUP,
     QUIT,
 )
+from twisted.spread import pb
 
 from events import (
     CharactorMoveRequest,
@@ -35,6 +36,7 @@ __all__ = (
     'CPUSpinnerController',
     'KeyboardController',
     'KeyboardController2',
+    'NetworkClientController',
 )
 
 
@@ -192,3 +194,23 @@ class KeyboardController2(AbsListener):
                 ev = CharactorMoveRequest(direction)
             if ev:
                 self.ev_manager.post(ev)
+
+
+class NetworkClientController(AbsListener, pb.Root):
+    '''...'''
+    def __init__(self, ev_manager: Mediator):
+        self.ev_manager = ev_manager
+        self.ev_manager.registerListener(self)
+
+    def remote_GameStartRequest(self):
+        ev = GameStartRequest()
+        self.ev_manager.post(ev)
+        return 1
+
+    def remote_CharactorMoveRequest(self, direction):
+        ev = CharactorMoveRequest(direction)
+        self.ev_manager.post(ev)
+        return 1
+
+    def notify(self, event):
+        pass
