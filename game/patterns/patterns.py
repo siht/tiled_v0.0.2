@@ -37,26 +37,26 @@ class Mediator:
     between the Model, View, and Controller.
     The heart of MVC
     http://ezide.com/games/writing-games.html'''
-    def __init__(self):
+    def __init__(self) -> None:
         self.listeners: WeakKeyDictionary[TypeListener, int] = WeakKeyDictionary()
         self.event_queue: List[TypeEvent] = []
         self.listeners_to_add: List[TypeListener] = []
         self.listeners_to_remove: List[TypeListener] = []
 
-    def registerListener(self, listener: TypeListener):
+    def registerListener(self, listener: TypeListener) -> None:
         self.listeners_to_add.append(listener)
 
-    def actuallyUpdateListeners(self):
+    def actuallyUpdateListeners(self) -> None:
         for listener in self.listeners_to_add:
             self.listeners[listener] = 1
         for listener in self.listeners_to_remove:
             if listener in self.listeners:
                 del self.listeners[listener]
 
-    def unregisterListener(self, listener: TypeListener):
+    def unregisterListener(self, listener: TypeListener) -> None:
         self.listeners_to_remove.append(listener)
 
-    def post(self, event: TypeEvent):
+    def post(self, event: TypeEvent) -> None:
         if not isinstance(event, TickEvent):
             debug(f'     Message:  {event.name}')
         self.event_queue.append(event)
@@ -65,7 +65,7 @@ class Mediator:
             self.actuallyUpdateListeners()
             self.consumeEventQueue()
 
-    def consumeEventQueue(self):
+    def consumeEventQueue(self) -> None:
         i = 0
         while i < len(self.event_queue):
             event = self.event_queue[i]
@@ -84,11 +84,11 @@ class Mediator:
 
 
 class NoTickMediator(Mediator):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._lock = False
 
-    def post(self, event):
+    def post(self, event: TypeEvent) -> None:
         super().post(event)
         if not self._lock:
             self._lock = True
@@ -107,7 +107,7 @@ class AbsListener(metaclass=ABCMeta):
     '''
 
     @abstractmethod
-    def notify(self, ev: TypeEvent):
+    def notify(self, ev: TypeEvent) -> None:
         pass
 
 

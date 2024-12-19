@@ -1,3 +1,10 @@
+from typing import (
+    Dict,
+    List,
+    Tuple,
+    Union,
+)
+
 import pygame
 from pygame.event import Event as PygameEvent
 from pygame.locals import (
@@ -47,14 +54,14 @@ class CPUSpinnerController(AbsListener):
     '''sends ticks to the aplication
     based on script of sjbrown
     http://ezide.com/games/writing-games.html'''
-    def __init__(self, ev_manager, fps=FPS):
-        self.ev_manager = ev_manager
+    def __init__(self, ev_manager: Mediator, fps: int=FPS) -> None:
+        self.ev_manager: Mediator = ev_manager
         self.ev_manager.registerListener(self)
         self.clock = pygame.time.Clock()
-        self.fps = fps
-        self.keep_going = 1
+        self.fps: int = fps
+        self.keep_going: int = 1
 
-    def run(self):
+    def run(self) -> None:
         if not self.keep_going:
             raise DeadSpinnerException()
         while self.keep_going:
@@ -62,7 +69,7 @@ class CPUSpinnerController(AbsListener):
             ev = TickEvent(aps)
             self.ev_manager.post(ev)
 
-    def notify(self, event: TypeEvent):
+    def notify(self, event: TypeEvent) -> None:
         if isinstance(event, QuitEvent):
             #this will stop the while loop from running
             self.keep_going = 0
@@ -72,8 +79,8 @@ class KeyboardController(AbsListener):
     '''...
     based on script of sjbrown
     http://ezide.com/games/writing-games.html'''
-    def __init__(self, ev_manager: Mediator):
-        self.ev_manager = ev_manager
+    def __init__(self, ev_manager: Mediator) -> None:
+        self.ev_manager: Mediator = ev_manager
         self.ev_manager.registerListener(self)
 
     def _somebody_close_window(self, event: PygameEvent) -> bool:
@@ -97,7 +104,7 @@ class KeyboardController(AbsListener):
     def _enter_was_pressed(self, event: PygameEvent) -> bool:
         return event.type == KEYDOWN and event.key == K_RETURN
 
-    def notify(self, event: TypeEvent):
+    def notify(self, event: TypeEvent) -> None:
         if isinstance(event, TickEvent):
             #Handle Input Events
             for pygame_event in pygame.event.get():
@@ -126,18 +133,18 @@ class KeyboardController(AbsListener):
 
 class KeyboardController2(AbsListener):
     '''this controller allows to send multiple movement events until keys isnt pressed'''
-    MOVEMENT_KEYS = (K_UP, K_DOWN, K_RIGHT, K_LEFT)
-    KEY_DIRECTIONS = {
+    MOVEMENT_KEYS: Tuple[int] = (K_UP, K_DOWN, K_RIGHT, K_LEFT)
+    KEY_DIRECTIONS: Dict[int, int] = {
         K_UP: DIRECTION_UP,
         K_DOWN: DIRECTION_DOWN,
         K_LEFT: DIRECTION_LEFT,
         K_RIGHT: DIRECTION_RIGHT,
     }
 
-    def __init__(self, ev_manager: Mediator):
-        self.ev_manager = ev_manager
+    def __init__(self, ev_manager: Mediator) -> None:
+        self.ev_manager: Mediator = ev_manager
         self.ev_manager.registerListener(self)
-        self.movement_keys_pressed = []
+        self.movement_keys_pressed: List[int] = []
 
     def _somebody_close_window(self, event: PygameEvent) -> bool:
         return event.type == QUIT
@@ -169,13 +176,13 @@ class KeyboardController2(AbsListener):
                 index = self.movement_keys_pressed.index(event.key)
                 del(self.movement_keys_pressed[index])
 
-    def _get_last_movement_key_pressed(self):
+    def _get_last_movement_key_pressed(self) -> int:
         return self.movement_keys_pressed[0]
 
-    def _get_direction_movement(self, key: int) -> int:
+    def _get_direction_movement(self, key: int) -> Union[int, None]:
         return self.KEY_DIRECTIONS.get(key, None)
 
-    def notify(self, event: TypeEvent):
+    def notify(self, event: TypeEvent) -> None:
         if isinstance(event, TickEvent):
             ev = None
             for pygame_event in pygame.event.get():
@@ -198,19 +205,19 @@ class KeyboardController2(AbsListener):
 
 class NetworkClientController(AbsListener, pb.Root):
     '''...'''
-    def __init__(self, ev_manager: Mediator):
-        self.ev_manager = ev_manager
+    def __init__(self, ev_manager: Mediator) -> None:
+        self.ev_manager: Mediator = ev_manager
         self.ev_manager.registerListener(self)
 
-    def remote_GameStartRequest(self):
+    def remote_GameStartRequest(self) -> int:
         ev = GameStartRequest()
         self.ev_manager.post(ev)
         return 1
 
-    def remote_CharactorMoveRequest(self, direction):
+    def remote_CharactorMoveRequest(self, direction: int) -> int:
         ev = CharactorMoveRequest(direction)
         self.ev_manager.post(ev)
         return 1
 
-    def notify(self, event):
+    def notify(self, event: TypeEvent) -> None:
         pass

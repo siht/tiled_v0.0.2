@@ -46,7 +46,7 @@ class SectorSprite(pygame.sprite.DirtySprite):
             self,
             sector: Sector,
             group=None,
-            location:Tuple[int, int]=(0, 0)):
+            location:Tuple[int, int]=(0, 0)) -> None:
         super(SectorSprite, self).__init__(group)
         grounds = SurfaceImage('Tileset- ground.png')
         default_grounds = Surfaces.listSurface(grounds, (13, 8))
@@ -63,7 +63,7 @@ class UmiSector(SectorSprite):
             self,
             sector: Sector,
             group=None,
-            location: Tuple[int, int]=(0, 0)):
+            location: Tuple[int, int]=(0, 0)) -> None:
         super(UmiSector, self).__init__(sector, group, location)
         self.image = self.images[40]
         self.image = Surfaces.scale(self.image, (SIZE_TILE, SIZE_TILE))
@@ -80,7 +80,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
             ev_manager: Mediator,
             charactor: Charactor,
             group=None,
-            location: Tuple[int, int]=(0, 0)):
+            location: Tuple[int, int]=(0, 0)) -> None:
         super(CharactorSprite, self).__init__(group)
 
         self.ev_manager = ev_manager
@@ -111,7 +111,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
         self.__has_change = 0 # to change images when is moving in a time
         self.__delay = MTS*(1/2.) # delay to change a certain frame
 
-    def move(self, direction: int):
+    def move(self, direction: int) -> None:
         '''when a charactor starts to move'''
         self.is_moving = 1
         self.dirty = 1
@@ -146,7 +146,7 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
             self.last_direction = direction
             self.last_move = 0
 
-    def stand(self):
+    def stand(self) -> None:
         '''when charactor was placed or is standing in a sector
         standing in a sector occurs when charactor finished a move'''
         self.dirty = 1
@@ -154,18 +154,18 @@ class CharactorSprite(pygame.sprite.DirtySprite, AbsListener):
         self.is_moving = 0
         self.__has_change = 0
 
-    def facingTo(self, direction: int):
+    def facingTo(self, direction: int) -> None:
         '''change the facing view if charactor can't move'''
         if direction != self.last_direction:
             self.dirty = 1
             self.last_direction = direction
             self.image = self.images[self.last_direction][self.STAND]
 
-    def __updateTweens(self):
+    def __updateTweens(self) -> None:
         self.dirty = 1
         self.__tweener.update(FPS/1000.0)
 
-    def notify(self, event: TypeEvent):
+    def notify(self, event: TypeEvent) -> None:
         '''notifies this object about what method must has has execute'''
         # if not moving and system has asks to move
         if not self.is_moving and isinstance(event, CharactorMoveRequest):

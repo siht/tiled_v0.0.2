@@ -35,53 +35,53 @@ TypeEvent = Type[Event]
 
 
 class TickEvent(Event):
-    def __init__(self, aps):
+    def __init__(self, aps) -> None:
         self.name = "CPU Tick Event"
         self.aps = aps
 
 
 class SecondEvent(Event):
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = "Clock One Second Event"
 
 
 class QuitEvent(Event):
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = "Program Quit Event"
 
 
 class MapBuiltEvent(Event):
-    def __init__(self, map):
+    def __init__(self, map) -> None:
         self.name = "Map Finished Building Event"
         self.map = map
 
 
 class GameStartRequest(Event):
-    def __init__(self):
+    def __init__(self) -> None:
         self.name = "Game Start Request"
 
 
 class GameStartedEvent(Event):
-    def __init__(self, game):
+    def __init__(self, game) -> None:
         self.name = "Game Started Event"
         self.game = game
 
 
 class CharactorMoveRequest(Event):
-    def __init__(self, direction):
+    def __init__(self, direction) -> None:
         self.name = "Charactor Move Request"
         self.direction = direction
 
 
 class CharactorMoveEvent(Event):
-    def __init__(self, charactor):
+    def __init__(self, charactor) -> None:
         self.name = "Charactor Move Event"
         self.charactor = charactor
 
 
 class CharactorPlaceRequest(Event):
     """..."""
-    def __init__(self, player, charactor, sector):
+    def __init__(self, player, charactor, sector) -> None:
         self.name = "Charactor Placement Request"
         self.player = player
         self.charactor = charactor
@@ -91,6 +91,6 @@ class CharactorPlaceRequest(Event):
 class CharactorPlaceEvent(Event):
     """this event occurs when a Charactor is *placed* in a sector, 
     ie it doesn't move there from an adjacent sector."""
-    def __init__(self, charactor):
+    def __init__(self, charactor) -> None:
         self.name = "Charactor Placement Event"
         self.charactor = charactor
