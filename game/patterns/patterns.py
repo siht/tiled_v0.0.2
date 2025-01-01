@@ -121,8 +121,7 @@ class FlyWeight(type):
     pattern flyweight as metaclass (level: aplication)
     add this metaclass in the definition of the class
     i.e.
-    class A(object):
-        __metaclass__ = FlyWeight
+    class A(metaclass=FlyWeight):
         ...
     '''
     def __init__(cls, name, bases, dct):
@@ -144,8 +143,7 @@ class Singleton(type):
     pattern singleton as metaclass (level: aplication)
     add this metaclass in the definition of the class
     i.e.
-    class A(object):
-        __metaclass__ = Singleton
+    class A(metaclass=Singleton):
         ...
     '''
     def __init__(cls, name, bases, dct):

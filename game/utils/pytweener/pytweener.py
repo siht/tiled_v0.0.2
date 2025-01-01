@@ -12,7 +12,7 @@ from . import easing
 class NoArgumentError(BaseException): pass
 
 
-class Tweener(object):
+class Tweener:
     def __init__(self, duration=0.5, tween=None):
         """Tweener
         This class manages all active tweens, and provides a factory for
@@ -105,7 +105,7 @@ class Tweener(object):
             self.currentTweens.remove(t)
 
 
-class Tween(object):
+class Tween:
     def __init__(self, obj, tduration, tweenType, completeFunction, updateFunction, delay, **kwargs):
         """Tween object:
             Can be created directly, but much more easily using Tweener.addTween( ... )
@@ -231,7 +231,7 @@ class Tween(object):
         self.complete = True
 
 
-class Tweenable(object):
+class Tweenable:
     def __init__(self, start, change):
         """Tweenable:
             Holds values for anything that can be tweened
@@ -266,7 +266,7 @@ if __name__=="__main__":
         def complete(self):
             print("I'm done tweening now mommy!")
 
-    class Sprite(object):
+    class Sprite:
         def __init__(self):
             self.x = 0
             self.y = 0

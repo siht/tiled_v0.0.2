@@ -213,7 +213,7 @@ class Map(AbsListener):
             self.sector_spawn = self.sectors.index(sect)+1
 
 
-class Sector(object):
+class Sector:
     '''map sectors, or tiles, no properties'''
     ev_manager: Union[Mediator, None] = None
     neighbors: List[Union[Sector, None]] = list()

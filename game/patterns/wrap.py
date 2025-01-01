@@ -111,7 +111,7 @@ if __name__ == '__main__':
     ## algunos nombres no los he cambiado y es por una confusi�n de t�rminos de mi parte entre
     ## Wrapper y Patr�n Decorador, los he dejado as� de momento
     
-    # class Decorador(object): __metaclass__ = MetaWrap
+    # class Decorador(metaclass=MetaWrap): 
 
     # class DecoSimple(Decorador):
         # def inerte(self): pass # se comporta como mixin
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
     # class DecoInt(Decorador): pass
 
-    # class ObjetoSimple(object):
+    # class ObjetoSimple:
         # hola = 'je'
         # def mthod(self):
             # return 99
