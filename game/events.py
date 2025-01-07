@@ -7,6 +7,17 @@ http://ezide.com/games/writing-games.html
 # sending the class name over the network. This is a potential vulnerability
 # I wouldn't suggest letting any of these classes DO anything, especially
 # things like file system access, or allocating huge amounts of memory
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import (
+        Charactor,
+        Game,
+        Map,
+        Player,
+        Sector,
+    )
 
 from typing import Type
 
@@ -35,7 +46,7 @@ TypeEvent = Type[Event]
 
 
 class TickEvent(Event):
-    def __init__(self, aps) -> None:
+    def __init__(self, aps: int) -> None:
         self.name = "CPU Tick Event"
         self.aps = aps
 
@@ -51,7 +62,7 @@ class QuitEvent(Event):
 
 
 class MapBuiltEvent(Event):
-    def __init__(self, map) -> None:
+    def __init__(self, map: Map) -> None:
         self.name = "Map Finished Building Event"
         self.map = map
 
@@ -62,26 +73,26 @@ class GameStartRequest(Event):
 
 
 class GameStartedEvent(Event):
-    def __init__(self, game) -> None:
+    def __init__(self, game: Game) -> None:
         self.name = "Game Started Event"
         self.game = game
 
 
 class CharactorMoveRequest(Event):
-    def __init__(self, direction) -> None:
+    def __init__(self, direction: int) -> None:
         self.name = "Charactor Move Request"
         self.direction = direction
 
 
 class CharactorMoveEvent(Event):
-    def __init__(self, charactor) -> None:
+    def __init__(self, charactor: Charactor) -> None:
         self.name = "Charactor Move Event"
         self.charactor = charactor
 
 
 class CharactorPlaceRequest(Event):
     """..."""
-    def __init__(self, player, charactor, sector) -> None:
+    def __init__(self, player: Player, charactor: Charactor, sector: Sector) -> None:
         self.name = "Charactor Placement Request"
         self.player = player
         self.charactor = charactor
@@ -91,6 +102,7 @@ class CharactorPlaceRequest(Event):
 class CharactorPlaceEvent(Event):
     """this event occurs when a Charactor is *placed* in a sector, 
     ie it doesn't move there from an adjacent sector."""
-    def __init__(self, charactor) -> None:
+    def __init__(self, charactor: Charactor) -> None:
         self.name = "Charactor Placement Event"
         self.charactor = charactor
+
