@@ -18,6 +18,8 @@ from pygame.locals import (
     KEYUP,
     QUIT,
 )
+from twisted.internet.main import installReactor
+from twisted.internet.selectreactor import SelectReactor
 from twisted.spread import pb
 
 from events import (
@@ -37,7 +39,9 @@ from preferences import (
     DIRECTION_RIGHT,
     DIRECTION_UP,
     FPS,
+    PORT,
 )
+import pygame_test
 
 __all__ = (
     'CPUSpinnerController',
@@ -222,3 +226,141 @@ class NetworkClientController(AbsListener, pb.Root):
     def notify(self, event: TypeEvent) -> None:
         '''implementation no needed'''
         pass
+
+
+class ReactorController(SelectReactor):
+    def __init__(self):
+        super().__init__()
+        connection = self.connectTCP('localhost', PORT, factory)
+        pygame_test.prepare()
+        installReactor(self)
+
+    def doIteration(self, delay):
+        print('calling doIteration')
+        super().doIteration(delay)
+        retval = pygame_test.iterate()
+        if retval == False:
+            thing_in_control.stop()
+
+
+class ReactorSlaveController:
+    def __init__(self):
+        self.keep_going = True
+        self.reactor = SelectReactor()
+        installReactor(self.reactor)
+        global factory
+        connection = self.reactor.connectTCP('localhost', PORT, factory)
+        self.reactor.startRunning()
+        self.future_call = None
+        self.future_call_timeout = None
+        pygame_test.prepare()
+
+    def iterate(self):
+        print('in iterate')
+        self.reactor.runUntilCurrent()
+        self.reactor.doIteration(0)
+        #t2 = self.reactor.timeout()
+        #print 'timeout', t2
+        #t = self.reactor.running and t2
+        #self.reactor.doIteration(t)
+
+    def run(self):
+        clock = pygame.time.Clock()
+
+        def stupid_test():
+            print('stupid test!')
+
+        self.reactor.callLater(2, stupid_test)
+        while self.keep_going:
+            time_change = clock.tick(FPS)
+            if self.future_call:
+                self.future_call_timeout -= time_change
+                print(f'future call in {self.future_call_timeout}')
+                if self.future_call_timeout <= 0:
+                    self.future_call()
+                    self.future_call_timeout = None
+                    self.future_call= None
+            retval = pygame_test.iterate()
+            if retval == False:
+                thing_in_control.stop()
+            self.iterate()
+
+    def stop(self):
+        print('stopping')
+        self.reactor.stop()
+        self.keep_going = False
+
+    def callLater(self, when, fn):
+        self.future_call_timeout = when*1000
+        self.future_call = fn
+        print(f'future call in {self.future_call_timeout}')
+
+
+class LoopingCallController:
+    def __init__(self):
+        from twisted.internet import reactor
+        from twisted.internet.task import LoopingCall
+        self.reactor = reactor
+        connection = self.reactor.connectTCP('localhost', PORT, factory)
+        self.looping_call = LoopingCall(self.iterate)
+        pygame_test.prepare()
+
+    def iterate(self):
+        print('looping call controller in iterate')
+        retval = pygame_test.iterate()
+        if retval == False:
+            thing_in_control.stop()
+
+    def run(self):
+        interval = 1.0 / FPS
+        self.looping_call.start(interval)
+        self.reactor.run()
+
+    def stop(self):
+        self.reactor.stop()
+
+    def callLater(self, when, fn):
+        self.reactor.callLater(when, fn)
+
+
+if __name__ == '__main__':
+    '''first activate server'''
+
+    global server
+    server = None
+
+    def got_server(serv):
+        print('-'*79)
+        print(f'got server {serv}')
+        global server
+        server = serv
+        # stop in exactly 5 seconds
+        thing_in_control.callLater(5.0, stop_loop)
+
+
+    def stop_loop():
+        print('-'*79)
+        print('stopping the loop')
+        thing_in_control.stop()
+
+    factory = pb.PBClientFactory()
+    d = factory.getRootObject()
+    d.addCallback(got_server)
+
+
+    import sys
+    if len(sys.argv) < 2:
+        print('usage: controllers.py 1|2|3')
+        sys.exit(1)
+    elif sys.argv[1] == '1':
+        thing_in_control = ReactorController()
+    elif sys.argv[1] == '2':
+        thing_in_control = ReactorSlaveController()
+    else:
+        thing_in_control = LoopingCallController()
+
+    thing_in_control.run()
+
+    print(server)
+    print('end')
+
